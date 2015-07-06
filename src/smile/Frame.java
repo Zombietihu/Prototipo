@@ -36,6 +36,7 @@ public final class Frame extends JFrame{
         add(panel);
         setVisible(true);
         
+        
     }
     
     public void iniciarComponentes(){
