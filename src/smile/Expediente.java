@@ -12,6 +12,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.*;
 
 /**
@@ -30,6 +32,8 @@ public class Expediente extends JFrame {
     JButton atras;
     JButton exit;
     JButton guardar;
+    JButton editar;
+    JButton nuevo;
     
     JTextArea pacienteText;
     JTextArea edadText;
@@ -128,6 +132,26 @@ public class Expediente extends JFrame {
             }
         });
        
+       ImageIcon e = new ImageIcon(this.getClass().getResource("/Imagen/editar.png"));
+       editar = new JButton();
+       editar.setIcon(e);
+       editar.setBounds(70, 450, 48, 48);
+       editar.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+               editarReporte();
+            }
+        });
+       
+       ImageIcon n = new ImageIcon(this.getClass().getResource("/Imagen/Nuevo_Usuario.gif"));
+       nuevo = new JButton();
+       nuevo.setIcon(n);
+       nuevo.setBounds(130, 450, 48, 48);
+       nuevo.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+               nuevoReporte();
+            }
+        });
+       
        d_leftPanel.add(paciente);
        d_leftPanel.add(pacienteText);
        d_leftPanel.add(edad);
@@ -140,6 +164,8 @@ public class Expediente extends JFrame {
        d_leftPanel.add(descripcion);
        d_leftPanel.add(descripcionText);
        d_leftPanel.add(guardar);
+       d_leftPanel.add(editar);
+       d_leftPanel.add(nuevo);
     }
     
     public void initRightPanel(){
@@ -244,7 +270,31 @@ public class Expediente extends JFrame {
          JOptionPane.showMessageDialog(null, "En construccion");
     }
     
+        
+    public void editarReporte(){
+        pacienteText.enable();
+        edadText.enable();
+        motivoConsultaText.enable();
+        descripcionText.enable();
+        sexo.enable();
+    }
+    
     public void guardarReporte(){
+        if (pacienteText.getText().trim().isEmpty()){
+            JOptionPane.showMessageDialog(null, "El campo Paciente esta Vacio.");
+            return;
+        }else{
+            Pattern pat = Pattern.compile("[a-zA-Z]");
+            Matcher mat = pat.matcher(pacienteText.getText());
+            if (mat.matches()) {
+                JOptionPane.showMessageDialog(null, "Campo Paciente Invalido, debe contener solo letras.");
+                return;
+            }
+        }
+        
+        
+       
+                    
         pacienteText.disable();
         edadText.disable();
         motivoConsultaText.disable();
@@ -260,6 +310,19 @@ public class Expediente extends JFrame {
     public void nuevaImagen(){
          JOptionPane.showMessageDialog(null, "En construccion");
     }
+    
+    public void nuevoReporte(){
+        pacienteText.setText("");
+        edadText.setText("");
+        motivoConsultaText.setText("");
+        descripcionText.setText("");
+        sexo.setSelectedIndex(0);
+        pacienteText.enable();
+        edadText.enable();
+        motivoConsultaText.enable();
+        descripcionText.enable();
+        sexo.enable();
+    }        
     
     public void salir(){
         this.dispose();
