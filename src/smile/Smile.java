@@ -5,6 +5,8 @@
  */
 package smile;
 
+import javax.swing.JFrame;
+
 /**
  *
  * @author fabian
@@ -17,6 +19,7 @@ public class Smile {
     public static void main(String[] args) {
         // TODO code application logic here
         Frame frame = new Frame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     
 }

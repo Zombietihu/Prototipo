@@ -5,22 +5,37 @@
  */
 package smile;
 
+import com.itextpdf.text.BadElementException;
+import com.itextpdf.text.DocumentException;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
  * @author fabian
  */
-public class Expediente extends JFrame {
+public final class Expediente extends JFrame implements MouseListener{
     JPanel d_leftPanel;
     JPanel d_rightPanel;
     JPanel d_verticalPanel;
@@ -52,15 +67,29 @@ public class Expediente extends JFrame {
     
     Calendar c1 = GregorianCalendar.getInstance();
     
-    String path;
+    BufferedImage bmp ;
+    int ban;
     
-    public Expediente(String ruta){
-        path = ruta;
+     Prueba Imagen;
+    
+    private int contPuntos = 0; //cuenta num puntos
+    private Point puntos[] = new Point[100000]; //Arreglo 10000 referencias
+    
+    public Expediente(BufferedImage bmp){
+         
+        this.bmp = bmp;
         iniciarComponentes();
+        iniciarBandera();
+        nuevaImagen(bmp);
         setTitle("Expedientes");
         setSize(1366, 768);
         setVisible(true);
+          
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+
+    
     
     public void iniciarComponentes(){
         JSplitPane pane=new JSplitPane();
@@ -73,6 +102,7 @@ public class Expediente extends JFrame {
         initRightPanel();
         pane.setRightComponent(d_rightPanel);
         d_rightPanel.setMinimumSize(new Dimension(770,d_rightPanel.getMinimumSize().height));
+        d_rightPanel.addMouseListener(this);
         
         initVerticalPanel();
         JSplitPane paneV=new JSplitPane(JSplitPane.VERTICAL_SPLIT);
@@ -205,7 +235,25 @@ public class Expediente extends JFrame {
         newImg.setBounds(180, 10, 128, 128);
         newImg.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-              nuevaImagen();
+                BufferedImage bmp2=null;
+                JFileChooser selector=new JFileChooser();
+                selector.setDialogTitle("Seleccione una imagen");
+                FileNameExtensionFilter filtroImagen = new FileNameExtensionFilter("JPG & GIF & BMP", "jpg", "gif", "bmp");
+                selector.setFileFilter(filtroImagen);
+                
+                int flag=selector.showOpenDialog(null);
+        //Comprobamos que pulse en aceptar
+                 if(flag==JFileChooser.APPROVE_OPTION){
+                    try {
+                //Devuelve el fichero seleccionado
+                      File imagenSeleccionada=selector.getSelectedFile();
+                //Asignamos a la variable bmp la imagen leida
+                      bmp2 = ImageIO.read(imagenSeleccionada);
+                     }  catch (Exception ex) {
+                    }
+                  
+                    }
+              nuevaImagen(bmp2);
             }
         });
         
@@ -215,7 +263,15 @@ public class Expediente extends JFrame {
         print.setBounds(360, 10, 128, 128);
         print.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-               imprimir();
+                try {
+                    imprimir();
+                } catch (DocumentException ex) {
+                    Logger.getLogger(Expediente.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(Expediente.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Expediente.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -302,13 +358,33 @@ public class Expediente extends JFrame {
         sexo.disable();
         
     }
-    
-    public void imprimir(){
-         ImprimirReporte imprime = new ImprimirReporte();
+    public int iniciarBandera(){
+        ban =1;
+        return 1;
     }
     
-    public void nuevaImagen(){
-         JOptionPane.showMessageDialog(null, "En construccion");
+    public void imprimir() throws DocumentException, FileNotFoundException, BadElementException, IOException{
+        
+       
+         ImprimirReporte imprime = new ImprimirReporte();
+         imprime.setNombre(pacienteText.getText());
+         imprime.setEdad(edadText.getText());
+         imprime.setSexo(sexo.getSelectedItem().toString());
+         imprime.setFecha( calendario.getText());
+         imprime.setMotivo(motivoConsultaText.getText());
+         imprime.setDescripcion( descripcionText.getText());
+         imprime.ImprimirReporte();
+    }
+    
+    public void nuevaImagen(BufferedImage bmp1){
+       
+        Imagen = new Prueba(bmp1);
+        Imagen.addMouseListener(this);
+        d_rightPanel.removeAll();
+        d_rightPanel.add(Imagen);
+        d_rightPanel.repaint();
+       
+              
     }
     
     public void nuevoReporte(){
@@ -324,8 +400,48 @@ public class Expediente extends JFrame {
         sexo.enable();
     }        
     
+  
+    
     public void salir(){
         this.dispose();
     }
+
+    @Override
+     public void mouseClicked(MouseEvent e) {
+      Point p = MouseInfo.getPointerInfo().getLocation();
+       
+      
+            System.out.println("x: "+p.x+" | y: "+p.y);
+           
+    }
+    
+    public void mousePressed(MouseEvent e) {
+        
+      
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        if (e.getSource() == d_rightPanel){
+            System.out.println("Entro al Panel  ");
+            d_rightPanel.repaint();
+        }
+  
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        if (e.getSource() == d_rightPanel){
+            System.out.println("Salio del panel");
+        }
+    }
+
+    
+    
     
 }

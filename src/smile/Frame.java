@@ -5,6 +5,8 @@
  */
 package smile;
 
+import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -35,8 +37,6 @@ public final class Frame extends JFrame{
         setSize(500, 600);
         add(panel);
         setVisible(true);
-        
-        
     }
     
     public void iniciarComponentes(){
@@ -122,7 +122,7 @@ public final class Frame extends JFrame{
         //Asignamos la imagen cargada a la propiedad imageActual
         //Retornamos el valor
         System.out.println(ruta);
-        Expediente exp = new Expediente(ruta);
+        Expediente exp = new Expediente(bmp);
         dispose();            
     }
     
