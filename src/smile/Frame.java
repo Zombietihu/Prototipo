@@ -44,7 +44,7 @@ public final class Frame extends JFrame{
         panel.setLayout(null);
         panel.setBackground(java.awt.Color.white);
         
-        ImageIcon icon = new ImageIcon(this.getClass().getResource("/Imagen/dental.jpg"));
+        ImageIcon icon = new ImageIcon(this.getClass().getResource("/Imagen/logo.jpg"));
         ImageIcon abrir = new ImageIcon(this.getClass().getResource("/Imagen/abrir.png"));
         ImageIcon help = new ImageIcon(this.getClass().getResource("/Imagen/help.jpeg"));
 
