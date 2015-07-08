@@ -11,6 +11,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
@@ -225,7 +226,11 @@ public final class Expediente extends JFrame implements MouseListener{
         analizar.setBounds(10, 10, 128, 128);
         analizar.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e){
-               analizarRadiografia();
+                try {
+                    analizarRadiografia();
+                } catch (IOException ex) {
+                    Logger.getLogger(Expediente.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
         
@@ -313,8 +318,16 @@ public final class Expediente extends JFrame implements MouseListener{
         d_verticalPanel.add(exit);
     }
 
-    public void analizarRadiografia(){
-        JOptionPane.showMessageDialog(null, "En construccion");
+    public void analizarRadiografia() throws IOException{
+       
+        File imagenSeleccionada=new File("/home/fabian/NetBeansProjects/Smile/src/Paciente/andrea-castro-trazado1.jpg");
+       
+        BufferedImage bmp1=ImageIO.read(imagenSeleccionada);
+        Imagen = new Prueba(bmp1);
+        Imagen.addMouseListener(this);
+        d_rightPanel.removeAll();
+        d_rightPanel.add(Imagen);
+        d_rightPanel.repaint();
     }
     
     public void atras(){

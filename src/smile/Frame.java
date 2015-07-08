@@ -89,7 +89,7 @@ public final class Frame extends JFrame{
         });
         
         labelHelp = new JLabel();
-        labelHelp.setText("Ayuda");
+        labelHelp.setText("Tutorial");
         labelHelp.setBounds(350, 500, 128, 20);
         panel.add(labelHelp);
     }
